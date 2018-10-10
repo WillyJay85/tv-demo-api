@@ -18,6 +18,7 @@
   "homepage": "https://github.com/WillyJay85/tv-demo-api#readme",
   "dependencies": {
     "body-parser": "^1.18.3",
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "monk": "^6.0.6"
   }
 }

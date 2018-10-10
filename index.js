@@ -1,26 +1,44 @@
+const monk = require('monk') 
+const db = monk("mongodb://Admin:password1@ds121343.mlab.com:21343/tv-demo")
+const tvShowsCollection = db.get('tv-shows')
 const express = require('express')
 const app = express()
-const port = 3000
+const port = 3009
 const bodyParser = require('body-parser')
+
 app.use(bodyParser.json())
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-  });
 
-
-      const tvShows = []
-        
- 
-
-app.get('/tv-demo', (req, res) => {
-    res.send(tvShows)
+app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+    res.setHeader('Access-Control-Allow-Headers',
+        'Origin, X-Requested_With, Content-Type, Accept, Authorization')
+    next()
 })
 
-app.post('/tv-demo', (req, res) =>  {
-    tvShows.push(req.body)
-    res.send(tvShows)
+//   const tvShows = []
+
+app.get('/tv-demo', async (req, res) => {
+    try {
+        console.log('beforemongo')
+        const TVShowArr = await tvShowsCollection.find({})
+        console.log('aftermongo')
+        res.send(TVShowArr)
+    } catch (error) {
+        console.log(error)
+        res.send(error)
+    }
+})
+
+app.post('/tv-demo', async (req, res) => {
+    try {
+        const savedTVShow = await tvShowsCollection.insert(req.body)
+        res.send(tvShows)
+    } catch (error) {
+        console.log(error)
+        res.send(error)
+    }
+
 })
 
 app.put('/tv-demo', (req, res) => res.send('You have changed your selection'))
